@@ -2,5 +2,5 @@
 
 ```bash
 dotnet tool restore
-dotnet csharpier .
+dotnet csharpier format .
 ```
