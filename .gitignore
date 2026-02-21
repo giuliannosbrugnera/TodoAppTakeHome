@@ -1,0 +1,60 @@
+# ========================
+# .NET / C# Build Artifacts
+# ========================
+bin/                  # compiled binaries
+obj/                  # intermediate build files
+*.dll                 # dynamic link libraries
+*.exe                 # executables
+*.pdb                 # debug symbols
+*.app                 # app bundle (if generated)
+
+# ========================
+# Visual Studio / IDE Files
+# ========================
+.vs/                  # Visual Studio workspace settings
+.vscode/              # VS Code workspace settings
+*.user                # user-specific project settings
+*.suo                 # Visual Studio solution user options
+*.userosscache        # user cache
+*.sln.docstates       # Visual Studio solution document states
+
+# ========================
+# EF Core / Database
+# ========================
+# Keep migrations code in repo, ignore actual DB file
+*.db                  # SQLite database file
+*.db-journal          # SQLite journal files
+
+# ========================
+# NuGet Packages
+# ========================
+*.nupkg               # NuGet packages
+packages/             # package folder
+*.snupkg              # symbols package
+
+# ========================
+# Node / Vue / Frontend
+# ========================
+node_modules/         # Node dependencies
+dist/                 # compiled frontend files
+npm-debug.log*        # npm debug logs
+yarn-debug.log*       # yarn debug logs
+yarn-error.log*       # yarn error logs
+package-lock.json     # optional: commit for reproducible builds
+yarn.lock             # optional: commit for reproducible builds
+
+# ========================
+# JetBrains IDEs
+# ========================
+.idea/                # JetBrains project settings
+*.iml                 # IntelliJ module files
+
+# ========================
+# macOS
+# ========================
+.DS_Store             # macOS folder metadata
+
+# ========================
+# Logs
+# ========================
+*.log                 # runtime or build logs
