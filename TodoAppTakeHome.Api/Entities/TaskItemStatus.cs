@@ -1,6 +1,6 @@
 namespace TodoAppTakeHome.Api.Entities;
 
-public enum TaskStatus
+public enum TaskItemStatus
 {
     Todo,
     InProgress,
