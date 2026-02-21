@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using TodoAppTakeHome.Api.Data;
+using TodoAppTakeHome.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,9 @@ builder.Services.AddSwaggerGen(c =>
 // FluentValidation
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+// Register TaskService for DI
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 // Build the application
 var app = builder.Build();
