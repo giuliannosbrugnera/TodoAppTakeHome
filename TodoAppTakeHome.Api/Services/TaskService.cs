@@ -9,7 +9,7 @@ public class TaskService(AppDbContext context) : ITaskService
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<IEnumerable<TaskResponse>> GetAllAsync() =>
+    public async Task<IReadOnlyList<TaskResponse>> GetAllAsync() =>
         await _context.Tasks.Select(t => ToResponse(t)).ToListAsync();
 
     public async Task<TaskResponse?> GetByIdAsync(Guid id)
