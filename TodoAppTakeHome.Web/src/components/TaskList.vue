@@ -2,8 +2,11 @@
   <div class="task-list p-6 max-w-3xl mx-auto">
     <h1 class="text-3xl font-bold text-blue-600 mb-4">Tasks</h1>
 
-    <div v-if="loading" class="text-gray-500">Loading tasks...</div>
-    <div v-else-if="tasks.length === 0" class="text-gray-500">No tasks found.</div>
+    <!-- Add Task Form -->
+    <TaskForm @task-added="handleTaskAdded" />
+
+    <div v-if="loading" class="text-gray-500 mt-4">Loading tasks...</div>
+    <div v-else-if="tasks.length === 0" class="text-gray-500 mt-4">No tasks found.</div>
 
     <ul v-else class="mt-4 space-y-4">
       <li
@@ -27,39 +30,43 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import TaskForm from './TaskForm.vue';
 import { getAllTasks, deleteTask } from '../api/tasks';
 import type { TaskResponse } from '../types/tasks';
 
-export default {
-  name: 'TaskList',
-  setup() {
-    const tasks = ref<TaskResponse[]>([]);
-    const loading = ref(true);
+// Reactive state
+const tasks = ref<TaskResponse[]>([]);
+const loading = ref(true);
 
-    const fetchTasks = async () => {
-      loading.value = true;
-      try {
-        tasks.value = await getAllTasks();
-      } finally {
-        loading.value = false;
-      }
-    };
-
-    const deleteTaskItem = async (id: string) => {
-      await deleteTask(id);
-      // refresh list after deletion
-      tasks.value = tasks.value.filter((t) => t.id !== id);
-    };
-
-    const formatDate = (dateStr: string) => new Date(dateStr).toLocaleString();
-
-    onMounted(() => {
-      fetchTasks();
-    });
-
-    return { tasks, loading, fetchTasks, deleteTaskItem, formatDate };
-  },
+// Fetch tasks from API
+const fetchTasks = async () => {
+  loading.value = true;
+  try {
+    tasks.value = await getAllTasks();
+  } finally {
+    loading.value = false;
+  }
 };
+
+// Delete task
+const deleteTaskItem = async (id: string) => {
+  await deleteTask(id);
+  tasks.value = tasks.value.filter((t) => t.id !== id);
+};
+
+// Handle event emitted from TaskForm
+const handleTaskAdded = (task: TaskResponse) => {
+  // Add new task to top
+  tasks.value.unshift(task);
+};
+
+// Format date
+const formatDate = (dateStr: string) => new Date(dateStr).toLocaleString();
+
+// Fetch tasks on mount
+onMounted(() => {
+  fetchTasks();
+});
 </script>
