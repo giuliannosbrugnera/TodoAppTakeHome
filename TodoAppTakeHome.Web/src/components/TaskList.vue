@@ -1,6 +1,6 @@
 <template>
   <div class="task-list">
-    <h2>Tasks</h2>
+    <h1 class="text-3xl font-bold text-blue-600">Tasks</h1>
 
     <div v-if="loading">Loading tasks...</div>
     <div v-else-if="tasks.length === 0">No tasks found.</div>
