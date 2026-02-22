@@ -1,15 +1,27 @@
 <template>
-  <div class="task-list">
-    <h1 class="text-3xl font-bold text-blue-600">Tasks</h1>
+  <div class="task-list p-6 max-w-3xl mx-auto">
+    <h1 class="text-3xl font-bold text-blue-600 mb-4">Tasks</h1>
 
-    <div v-if="loading">Loading tasks...</div>
-    <div v-else-if="tasks.length === 0">No tasks found.</div>
-    <ul v-else>
-      <li v-for="task in tasks" :key="task.id" class="task-item">
-        <strong>{{ task.title }}</strong>
-        <p v-if="task.description">{{ task.description }}</p>
-        <small>Status: {{ task.status }} | Created: {{ formatDate(task.createdAt) }}</small>
-        <button @click="deleteTaskItem(task.id)">Delete</button>
+    <div v-if="loading" class="text-gray-500">Loading tasks...</div>
+    <div v-else-if="tasks.length === 0" class="text-gray-500">No tasks found.</div>
+
+    <ul v-else class="mt-4 space-y-4">
+      <li
+        v-for="task in tasks"
+        :key="task.id"
+        class="p-4 border rounded shadow-sm hover:bg-gray-50 transition"
+      >
+        <strong class="text-lg">{{ task.title }}</strong>
+        <p v-if="task.description" class="text-gray-700 mt-1">{{ task.description }}</p>
+        <small class="text-gray-500 block mt-2">
+          Status: {{ task.status }} | Created: {{ formatDate(task.createdAt) }}
+        </small>
+        <button
+          @click="deleteTaskItem(task.id)"
+          class="mt-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+        >
+          Delete
+        </button>
       </li>
     </ul>
   </div>
@@ -51,31 +63,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.task-list {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.task-item {
-  border: 1px solid #ccc;
-  padding: 12px;
-  margin-bottom: 8px;
-  border-radius: 4px;
-}
-
-.task-item button {
-  margin-top: 4px;
-  background-color: #ff4d4f;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.task-item button:hover {
-  background-color: #d9363e;
-}
-</style>
