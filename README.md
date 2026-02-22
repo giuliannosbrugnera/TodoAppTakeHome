@@ -67,6 +67,19 @@ SQLite database files (`*.db`) are ignored.
 
 ---
 
+## Running Tests
+
+The solution uses **xUnit** and **EF Core InMemory** for isolated unit tests.
+
+### From terminal
+
+```bash
+dotnet restore
+dotnet test TodoAppTakeHome.Tests/TodoAppTakeHome.Tests.csproj
+```
+
+---
+
 ## Run the Application
 
 ```bash

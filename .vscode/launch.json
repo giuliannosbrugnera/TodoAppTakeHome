@@ -12,6 +12,17 @@
       "stopAtEntry": false,
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "name": ".NET Core Test (All)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/TodoAppTakeHome.Tests/bin/Debug/net10.0/TodoAppTakeHome.Tests.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/TodoAppTakeHome.Tests",
+      "console": "internalConsole",
+      "stopAtEntry": false
     }
   ]
 }

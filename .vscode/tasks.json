@@ -5,12 +5,28 @@
       "label": "build",
       "command": "dotnet",
       "type": "process",
-      "args": [
-        "build",
-        "${workspaceFolder}/TodoAppTakeHome.Api/TodoAppTakeHome.Api.csproj"
-      ],
+      "args": ["build", "${workspaceFolder}/TodoAppTakeHome.sln"],
       "problemMatcher": "$msCompile",
-      "group": "build"
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "test",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "test",
+        "${workspaceFolder}/TodoAppTakeHome.Tests/TodoAppTakeHome.Tests.csproj",
+        "--no-build"
+      ],
+      "dependsOn": "build",
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
     }
   ]
 }
