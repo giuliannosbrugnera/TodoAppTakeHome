@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="addTask" class="p-6 max-w-md mx-auto space-y-4">
+  <form @submit.prevent="addTask" class="space-y-4">
     <input
       v-model="title"
       type="text"

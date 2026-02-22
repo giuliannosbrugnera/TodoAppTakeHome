@@ -19,12 +19,20 @@
         <small class="text-gray-500 block mt-2">
           Status: {{ task.status }} | Created: {{ formatDate(task.createdAt) }}
         </small>
-        <button
-          @click="deleteTaskItem(task.id)"
-          class="mt-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-        >
-          Delete
-        </button>
+        <div class="mt-2 flex items-center space-x-2">
+          <select v-model="task.status" @change="updateTaskStatus(task)" class="border p-1 rounded">
+            <option value="Todo">Todo</option>
+            <option value="InProgress">In Progress</option>
+            <option value="Done">Done</option>
+          </select>
+
+          <button
+            @click="deleteTaskItem(task.id)"
+            class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          >
+            Delete
+          </button>
+        </div>
       </li>
     </ul>
   </div>
@@ -33,7 +41,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import TaskForm from './TaskForm.vue';
-import { getAllTasks, deleteTask } from '../api/tasks';
+import { getAllTasks, deleteTask, updateTask } from '../api/tasks';
 import type { TaskResponse } from '../types/tasks';
 
 // Reactive state
@@ -54,6 +62,11 @@ const fetchTasks = async () => {
 const deleteTaskItem = async (id: string) => {
   await deleteTask(id);
   tasks.value = tasks.value.filter((t) => t.id !== id);
+};
+
+// Update task status
+const updateTaskStatus = async (task: TaskResponse) => {
+  await updateTask(task.id, { status: task.status });
 };
 
 // Handle event emitted from TaskForm
