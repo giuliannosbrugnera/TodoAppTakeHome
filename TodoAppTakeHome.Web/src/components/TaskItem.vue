@@ -6,7 +6,7 @@
       <p v-if="task.description" class="text-gray-700 mt-1">{{ task.description }}</p>
       <small class="text-gray-500 block mt-2">
         Status: {{ getStatusLabel(task.status) }} | Created: {{ formatDate(task.createdAt) }}
-        <span v-if="task.dueDate">| Due: {{ formatDate(task.dueDate) }}</span>
+        <span v-if="task.dueDate">| Due: {{ formatDate(task.dueDate, false) }}</span>
       </small>
 
       <div class="mt-2 flex items-center space-x-2">
@@ -63,6 +63,7 @@ import { ref } from 'vue';
 import type { TaskResponse } from '../types/tasks';
 import { TaskItemStatus } from '../types/tasks';
 import { updateTask, deleteTask } from '../api/tasks';
+import { useDate } from '../composables/useDate';
 
 // Props
 const props = defineProps<{
@@ -91,7 +92,7 @@ const statusLabels: Record<TaskItemStatus, string> = {
   [TaskItemStatus.Done]: 'Done',
 };
 const getStatusLabel = (status: TaskItemStatus) => statusLabels[status] ?? 'Unknown';
-const formatDate = (dateStr: string) => new Date(dateStr).toLocaleString();
+const { formatDate } = useDate();
 
 // Methods
 const updateStatus = async () => {
