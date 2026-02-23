@@ -35,7 +35,7 @@
     <!-- Edit Mode -->
     <div v-else class="space-y-2">
       <input v-model="editTitle" class="w-full border p-2 rounded" />
-      <textarea v-model="editDescription" class="w-full border p-2 rounded" />
+      <textarea v-model="editDescription" class="w-full border p-2 rounded"></textarea>
       <div class="flex space-x-2">
         <button
           @click="saveEdit"
