@@ -26,6 +26,7 @@ import type { TaskResponse } from '../types/tasks';
 // Define a typed event emitter for the parent
 const emit = defineEmits<{
   (e: 'task-added', task: TaskResponse): void;
+  (e: 'error', message: string): void;
 }>();
 
 // Reactive form state
@@ -36,16 +37,21 @@ const description = ref('');
 const addTask = async () => {
   if (!title.value) return;
 
-  const newTask = await createTask({
-    title: title.value,
-    description: description.value || undefined,
-  });
+  try {
+    const newTask = await createTask({
+      title: title.value,
+      description: description.value || undefined,
+    });
 
-  // Emit event to parent
-  emit('task-added', newTask);
+    // Emit event to parent
+    emit('task-added', newTask);
 
-  // Reset form
-  title.value = '';
-  description.value = '';
+    // Reset form
+    title.value = '';
+    description.value = '';
+  } catch (err) {
+    console.log(err);
+    emit('error', 'Failed to add task item.');
+  }
 };
 </script>

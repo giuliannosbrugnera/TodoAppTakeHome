@@ -72,9 +72,10 @@ const emit = defineEmits<{
   (e: 'updated', task: TaskResponse): void;
   (e: 'start-edit', task: TaskResponse): void;
   (e: 'cancel-edit'): void;
+  (e: 'error', message: string): void;
 }>();
 
-// Local editing state
+// Reactive state
 const editTitle = ref(props.task.title);
 const editDescription = ref(props.task.description ?? '');
 
@@ -89,13 +90,23 @@ const formatDate = (dateStr: string) => new Date(dateStr).toLocaleString();
 
 // Methods
 const updateStatus = async () => {
-  const updated = await updateTask(props.task.id, { status: props.task.status });
-  emit('updated', updated);
+  try {
+    const updated = await updateTask(props.task.id, { status: props.task.status });
+    emit('updated', updated);
+  } catch (err) {
+    console.error(err);
+    emit('error', 'Failed to update task status.');
+  }
 };
 
 const deleteTaskItem = async () => {
-  await deleteTask(props.task.id);
-  emit('deleted', props.task.id);
+  try {
+    await deleteTask(props.task.id);
+    emit('deleted', props.task.id);
+  } catch (err) {
+    console.error(err);
+    emit('error', 'Failed to delete task.');
+  }
 };
 
 const startEdit = () => {
@@ -107,10 +118,15 @@ const cancelEdit = () => {
 };
 
 const saveEdit = async () => {
-  const updated = await updateTask(props.task.id, {
-    title: editTitle.value,
-    description: editDescription.value || undefined,
-  });
-  emit('updated', updated);
+  try {
+    const updated = await updateTask(props.task.id, {
+      title: editTitle.value,
+      description: editDescription.value || undefined,
+    });
+    emit('updated', updated);
+  } catch (err) {
+    console.error(err);
+    emit('error', 'Failed to save changes.');
+  }
 };
 </script>
