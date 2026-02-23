@@ -14,24 +14,66 @@
         :key="task.id"
         class="p-4 border rounded shadow-sm hover:bg-gray-50 transition"
       >
-        <strong class="text-lg">{{ task.title }}</strong>
-        <p v-if="task.description" class="text-gray-700 mt-1">{{ task.description }}</p>
-        <small class="text-gray-500 block mt-2">
-          Status: {{ task.status }} | Created: {{ formatDate(task.createdAt) }}
-        </small>
-        <div class="mt-2 flex items-center space-x-2">
-          <select v-model="task.status" @change="updateTaskStatus(task)" class="border p-1 rounded">
-            <option value="Todo">Todo</option>
-            <option value="InProgress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
+        <!-- View Mode -->
+        <div v-if="editingTaskId !== task.id">
+          <strong class="text-lg">{{ task.title }}</strong>
 
-          <button
-            @click="deleteTaskItem(task.id)"
-            class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-          >
-            Delete
-          </button>
+          <p v-if="task.description" class="text-gray-700 mt-1">
+            {{ task.description }}
+          </p>
+
+          <small class="text-gray-500 block mt-2">
+            Status: {{ task.status }} | Created: {{ formatDate(task.createdAt) }}
+          </small>
+
+          <div class="mt-2 flex items-center space-x-2">
+            <select
+              v-model="task.status"
+              @change="updateTaskStatus(task)"
+              class="border p-1 rounded"
+            >
+              <option value="Todo">Todo</option>
+              <option value="InProgress">In Progress</option>
+              <option value="Done">Done</option>
+            </select>
+
+            <button
+              @click="startEditing(task)"
+              class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+            >
+              Edit
+            </button>
+
+            <button
+              @click="deleteTaskItem(task.id)"
+              class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <!-- Edit Mode -->
+        <div v-else class="space-y-2">
+          <input v-model="editTitle" class="w-full border p-2 rounded" />
+
+          <textarea v-model="editDescription" class="w-full border p-2 rounded" />
+
+          <div class="flex space-x-2">
+            <button
+              @click="saveEdit(task)"
+              class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
+            >
+              Save
+            </button>
+
+            <button
+              @click="cancelEdit"
+              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 transition"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </li>
     </ul>
@@ -47,6 +89,11 @@ import type { TaskResponse } from '../types/tasks';
 // Reactive state
 const tasks = ref<TaskResponse[]>([]);
 const loading = ref(true);
+
+// Editing state
+const editingTaskId = ref<string | null>(null);
+const editTitle = ref('');
+const editDescription = ref('');
 
 // Fetch tasks from API
 const fetchTasks = async () => {
@@ -69,6 +116,33 @@ const updateTaskStatus = async (task: TaskResponse) => {
   await updateTask(task.id, { status: task.status });
 };
 
+// Start editing
+const startEditing = (task: TaskResponse) => {
+  editingTaskId.value = task.id;
+  editTitle.value = task.title;
+  editDescription.value = task.description ?? '';
+};
+
+// Cancel editing
+const cancelEdit = () => {
+  editingTaskId.value = null;
+};
+
+// Save edit
+const saveEdit = async (task: TaskResponse) => {
+  const updated = await updateTask(task.id, {
+    title: editTitle.value,
+    description: editDescription.value || undefined,
+  });
+
+  const index = tasks.value.findIndex((t) => t.id === task.id);
+  if (index !== -1) {
+    tasks.value[index] = updated;
+  }
+
+  editingTaskId.value = null;
+};
+
 // Handle event emitted from TaskForm
 const handleTaskAdded = (task: TaskResponse) => {
   // Add new task to top
@@ -79,7 +153,5 @@ const handleTaskAdded = (task: TaskResponse) => {
 const formatDate = (dateStr: string) => new Date(dateStr).toLocaleString();
 
 // Fetch tasks on mount
-onMounted(() => {
-  fetchTasks();
-});
+onMounted(fetchTasks);
 </script>
