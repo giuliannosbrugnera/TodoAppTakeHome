@@ -6,6 +6,20 @@
       {{ error }}
     </div>
 
+    <div class="flex space-x-4 items-center mb-4">
+      <select v-model="filterStatus" class="border p-1 rounded">
+        <option value="">All Status</option>
+        <option v-for="status in allStatuses" :key="status" :value="status">
+          {{ getStatusLabel(status) }}
+        </option>
+      </select>
+
+      <select v-model="sortOrder" class="border p-1 rounded">
+        <option value="asc">Due Date Asc</option>
+        <option value="desc">Due Date Desc</option>
+      </select>
+    </div>
+
     <!-- Add Task Form -->
     <TaskForm @task-added="onTaskAdded" @error="error = $event" />
 
@@ -14,7 +28,7 @@
 
     <ul v-else class="mt-4 space-y-4">
       <TaskItem
-        v-for="task in tasks"
+        v-for="task in filteredAndSortedTasks"
         :key="task.id"
         :task="task"
         :editing-task-id="editingTaskId"
@@ -29,16 +43,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import TaskForm from './TaskForm.vue';
 import TaskItem from './TaskItem.vue';
 import { getAllTasks } from '../api/tasks';
 import type { TaskResponse } from '../types/tasks';
+import { useTaskStatus } from '../composables/useTaskStatus';
+
+const { getStatusLabel, allStatuses } = useTaskStatus();
 
 // Reactive state
 const tasks = ref<TaskResponse[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
+const filterStatus = ref<string>('');
+const sortOrder = ref<'asc' | 'desc'>('asc');
 
 // Clear error after a few seconds
 watch(error, (val) => {
@@ -83,6 +102,20 @@ const onTaskUpdated = (updatedTask: TaskResponse) => {
   // Exit edit mode
   editingTaskId.value = null;
 };
+
+const filteredAndSortedTasks = computed(() => {
+  let list = [...tasks.value];
+
+  if (filterStatus.value) {
+    list = list.filter((t) => t.status === filterStatus.value);
+  }
+
+  return list.sort((a, b) => {
+    const dateA = a.dueDate ? new Date(a.dueDate).getTime() : 0;
+    const dateB = b.dueDate ? new Date(b.dueDate).getTime() : 0;
+    return sortOrder.value === 'asc' ? dateA - dateB : dateB - dateA;
+  });
+});
 
 // Fetch tasks on mount
 onMounted(fetchTasks);

@@ -11,7 +11,7 @@
 
       <div class="mt-2 flex items-center space-x-2">
         <select v-model="task.status" @change="updateStatus" class="border p-1 rounded">
-          <option v-for="status in Object.values(TaskItemStatus)" :key="status" :value="status">
+          <option v-for="status in allStatuses" :key="status" :value="status">
             {{ getStatusLabel(status) }}
           </option>
         </select>
@@ -61,9 +61,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { TaskResponse } from '../types/tasks';
-import { TaskItemStatus } from '../types/tasks';
 import { updateTask, deleteTask } from '../api/tasks';
 import { useDate } from '../composables/useDate';
+import { useTaskStatus } from '../composables/useTaskStatus';
+
+const { getStatusLabel, allStatuses } = useTaskStatus();
 
 // Props
 const props = defineProps<{
@@ -84,14 +86,6 @@ const emit = defineEmits<{
 const editTitle = ref(props.task.title);
 const editDescription = ref(props.task.description ?? '');
 const editDueDate = ref(props.task.dueDate ?? null);
-
-// Helpers
-const statusLabels: Record<TaskItemStatus, string> = {
-  [TaskItemStatus.Todo]: 'Todo',
-  [TaskItemStatus.InProgress]: 'In Progress',
-  [TaskItemStatus.Done]: 'Done',
-};
-const getStatusLabel = (status: TaskItemStatus) => statusLabels[status] ?? 'Unknown';
 const { formatDate } = useDate();
 
 // Methods
