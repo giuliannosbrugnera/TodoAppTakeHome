@@ -5,7 +5,8 @@
     <ErrorMessage :message="error" />
 
     <div class="flex space-x-4 items-center mb-4">
-      <select v-model="filterStatus" class="border p-1 rounded">
+      <label for="filterStatus" class="sr-only">Filter by Status</label>
+      <select id="filterStatus" v-model="filterStatus" class="border p-1 rounded">
         <option value="">All Status</option>
         <option v-for="status in allStatuses" :key="status" :value="status">
           {{ getStatusLabel(status) }}
