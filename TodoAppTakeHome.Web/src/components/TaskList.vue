@@ -2,9 +2,7 @@
   <div class="task-list p-6 max-w-3xl mx-auto">
     <h1 class="text-3xl font-bold text-blue-600 mb-4">Tasks</h1>
 
-    <div v-if="error" class="bg-red-100 text-red-700 p-2 rounded mb-4">
-      {{ error }}
-    </div>
+    <ErrorMessage :message="error" />
 
     <div class="flex space-x-4 items-center mb-4">
       <select v-model="filterStatus" class="border p-1 rounded">
@@ -43,9 +41,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import TaskForm from './TaskForm.vue';
 import TaskItem from './TaskItem.vue';
+import ErrorMessage from './ErrorMessage.vue';
 import { getAllTasks } from '../api/tasks';
 import type { TaskResponse } from '../types/tasks';
 import { useTaskStatus } from '../composables/useTaskStatus';
@@ -58,13 +57,6 @@ const loading = ref(true);
 const error = ref<string | null>(null);
 const filterStatus = ref<string>('');
 const sortOrder = ref<'asc' | 'desc'>('asc');
-
-// Clear error after a few seconds
-watch(error, (val) => {
-  if (val) {
-    setTimeout(() => (error.value = null), 5000);
-  }
-});
 
 // Editing state
 const editingTaskId = ref<string | null>(null);
