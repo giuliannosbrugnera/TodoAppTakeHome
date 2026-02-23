@@ -11,7 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=todoapp.db"));
 
 // Add controllers
-builder.Services.AddControllers();
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter()
+        );
+    });
 
 // Swagger / OpenAPI
 builder.Services.AddEndpointsApiExplorer();
