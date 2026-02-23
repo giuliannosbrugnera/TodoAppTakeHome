@@ -12,6 +12,10 @@
       placeholder="Description"
       class="w-full border p-2 rounded"
     ></textarea>
+    <div class="flex flex-col space-y-1">
+      <label for="dueDate" class="text-sm font-medium text-gray-700">Due Date</label>
+      <input id="dueDate" v-model="dueDate" type="date" class="border p-2 rounded w-full" />
+    </div>
     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
       Add Task
     </button>
@@ -32,6 +36,7 @@ const emit = defineEmits<{
 // Reactive form state
 const title = ref('');
 const description = ref('');
+const dueDate = ref<string | null>(null);
 
 // Add task handler
 const addTask = async () => {
@@ -41,6 +46,7 @@ const addTask = async () => {
     const newTask = await createTask({
       title: title.value,
       description: description.value || undefined,
+      dueDate: dueDate.value || undefined,
     });
 
     // Emit event to parent
@@ -49,6 +55,7 @@ const addTask = async () => {
     // Reset form
     title.value = '';
     description.value = '';
+    dueDate.value = null;
   } catch (err) {
     console.log(err);
     emit('error', 'Failed to add task item.');

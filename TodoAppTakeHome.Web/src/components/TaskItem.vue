@@ -36,6 +36,10 @@
     <div v-else class="space-y-2">
       <input v-model="editTitle" class="w-full border p-2 rounded" />
       <textarea v-model="editDescription" class="w-full border p-2 rounded"></textarea>
+      <div class="flex flex-col space-y-1">
+        <label for="dueDate" class="text-sm font-medium text-gray-700">Due Date</label>
+        <input id="dueDate" v-model="editDueDate" type="date" class="border p-2 rounded w-full" />
+      </div>
       <div class="flex space-x-2">
         <button
           @click="saveEdit"
@@ -78,6 +82,7 @@ const emit = defineEmits<{
 // Reactive state
 const editTitle = ref(props.task.title);
 const editDescription = ref(props.task.description ?? '');
+const editDueDate = ref(props.task.dueDate ?? null);
 
 // Helpers
 const statusLabels: Record<TaskItemStatus, string> = {
