@@ -10,7 +10,12 @@
       </small>
 
       <div class="mt-2 flex items-center space-x-2">
-        <select v-model="task.status" @change="updateStatus" class="border p-1 rounded">
+        <select
+          v-model="task.status"
+          @change="updateStatus"
+          class="border p-1 rounded"
+          :disabled="loading"
+        >
           <option v-for="status in allStatuses" :key="status" :value="status">
             {{ getStatusLabel(status) }}
           </option>
@@ -19,6 +24,7 @@
         <button
           @click="startEdit"
           class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+          :disabled="loading"
         >
           Edit
         </button>
@@ -26,6 +32,7 @@
         <button
           @click="deleteTaskItem"
           class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          :disabled="loading"
         >
           Delete
         </button>
@@ -87,25 +94,32 @@ const emit = defineEmits<{
 const editTitle = ref(props.task.title);
 const editDescription = ref(props.task.description ?? '');
 const editDueDate = ref(props.task.dueDate ?? null);
+const loading = ref(false);
 
 // Methods
 const updateStatus = async () => {
+  loading.value = true;
   try {
     const updated = await updateTask(props.task.id, { status: props.task.status });
     emit('updated', updated);
   } catch (err) {
     console.error(err);
     emit('error', 'Failed to update task status.');
+  } finally {
+    loading.value = false;
   }
 };
 
 const deleteTaskItem = async () => {
+  loading.value = true;
   try {
     await deleteTask(props.task.id);
     emit('deleted', props.task.id);
   } catch (err) {
     console.error(err);
     emit('error', 'Failed to delete task.');
+  } finally {
+    loading.value = false;
   }
 };
 
