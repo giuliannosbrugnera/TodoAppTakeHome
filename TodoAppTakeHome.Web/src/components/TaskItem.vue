@@ -65,6 +65,7 @@ import { updateTask, deleteTask } from '../api/tasks';
 import { useDate } from '../composables/useDate';
 import { useTaskStatus } from '../composables/useTaskStatus';
 
+const { formatDate } = useDate();
 const { getStatusLabel, allStatuses } = useTaskStatus();
 
 // Props
@@ -86,7 +87,6 @@ const emit = defineEmits<{
 const editTitle = ref(props.task.title);
 const editDescription = ref(props.task.description ?? '');
 const editDueDate = ref(props.task.dueDate ?? null);
-const { formatDate } = useDate();
 
 // Methods
 const updateStatus = async () => {
