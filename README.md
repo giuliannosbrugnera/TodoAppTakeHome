@@ -1,8 +1,10 @@
-# TodoAppTakeHome API
+# TodoAppTakeHome – Full Stack Task Management App
 
-Minimal ASP.NET Core Web API for managing tasks.
+Minimal full-stack task management application built with ASP.NET Core and Vue 3.
 
 ---
+
+# Backend – TodoAppTakeHome API
 
 ## Tech Stack
 
@@ -13,6 +15,8 @@ Minimal ASP.NET Core Web API for managing tasks.
 - FluentValidation
 - Swagger (Swashbuckle)
 - CSharpier
+- xUnit (tests)
+- EF Core InMemory (test isolation)
 
 ---
 
@@ -37,13 +41,16 @@ TodoAppTakeHome.Api/
 - Validation via FluentValidation
 - EF Core with committed migrations
 - Environment-aware configuration
-- Entities are not exposed directly through the API (DTO separation)
+- Entities are not exposed directly (DTO separation)
+- Centralized error handling
+- Clean separation of concerns
 
 ---
 
 ## Prerequisites
 
 - .NET 10 SDK
+- Node.js 18+
 
 Install required tools:
 
@@ -67,11 +74,7 @@ SQLite database files (`*.db`) are ignored.
 
 ---
 
-## Running Tests
-
-The solution uses **xUnit** and **EF Core InMemory** for isolated unit tests.
-
-### From terminal
+## Running Backend Tests
 
 ```bash
 dotnet restore
@@ -80,7 +83,7 @@ dotnet test TodoAppTakeHome.Tests/TodoAppTakeHome.Tests.csproj
 
 ---
 
-## Run the Application
+## Run Backend
 
 ```bash
 dotnet run --project TodoAppTakeHome.Api/TodoAppTakeHome.Api.csproj
@@ -118,9 +121,72 @@ Base route:
 
 ---
 
+# Frontend – Vue 3 Application
+
+## Tech Stack
+
+- Vue 3 (Composition API)
+- TypeScript
+- Vite
+- TailwindCSS
+- Vitest
+- Testing Library
+
+---
+
+## Features
+
+- Create task
+- Edit task
+- Delete task
+- Status update (Todo, InProgress, Done)
+- Optional due date
+- Filtering by status
+- Sorting by due date (asc/desc)
+- Per-action loading states
+- Centralized animated error component
+- Unit tests with mocked API layer
+
+---
+
+## Frontend Architecture
+
+- Parent-owned state (`TaskList`)
+- Event-driven child components (`TaskForm`, `TaskItem`)
+- Reusable composables (`useDate`, `useTaskStatus`)
+- Centralized error display
+- Clean component separation
+- Mocked API layer for frontend unit tests
+
+---
+
+## Run Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Default URL:
+
+```
+http://localhost:5173
+```
+
+---
+
+## Run Frontend Tests
+
+```bash
+npm run test
+```
+
+---
+
 ## Formatting
 
-Run:
+Backend:
 
 ```bash
 dotnet csharpier format .
@@ -132,3 +198,25 @@ dotnet csharpier format .
 
 - HTTPS redirection enabled outside Development.
 - Development-only reset endpoint is isolated and excluded from production.
+- Migrations are committed for reproducible schema.
+- DTO separation prevents leaking domain entities.
+- Frontend tests mock API calls to ensure deterministic behavior.
+- The project is structured for clarity and maintainability, with production considerations in mind.
+
+## Assumptions & Trade-offs
+
+- Authentication and authorization are out of scope.
+- Pagination is not implemented due to small dataset assumption.
+- State updates occur after successful API responses to ensure consistency.
+- SQLite was chosen for simplicity; production would use a managed SQL instance.
+- Frontend uses local state; global state management (e.g., Pinia) is not required at current scale.
+
+## Future Improvements
+
+- Add pagination and search.
+- Add authentication and role-based access.
+- Add integration tests for full-stack flows.
+- Add CI pipeline.
+- Add caching layer.
+- Add optimistic UI updates.
+- Add Docker support.
