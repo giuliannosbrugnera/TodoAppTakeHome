@@ -23,7 +23,7 @@
           </p>
 
           <small class="text-gray-500 block mt-2">
-            Status: {{ task.status }} | Created: {{ formatDate(task.createdAt) }}
+            Status: {{ getStatusLabel(task.status) }} | Created: {{ formatDate(task.createdAt) }}
           </small>
 
           <div class="mt-2 flex items-center space-x-2">
@@ -32,9 +32,9 @@
               @change="updateTaskStatus(task)"
               class="border p-1 rounded"
             >
-              <option value="Todo">Todo</option>
-              <option value="InProgress">In Progress</option>
-              <option value="Done">Done</option>
+              <option v-for="status in Object.values(TaskItemStatus)" :key="status" :value="status">
+                {{ getStatusLabel(status) }}
+              </option>
             </select>
 
             <button
@@ -85,6 +85,16 @@ import { ref, onMounted } from 'vue';
 import TaskForm from './TaskForm.vue';
 import { getAllTasks, deleteTask, updateTask } from '../api/tasks';
 import type { TaskResponse } from '../types/tasks';
+import { TaskItemStatus } from '../types/tasks';
+
+// Status Label Mapping (UI helper)
+const statusLabels: Record<TaskItemStatus, string> = {
+  [TaskItemStatus.Todo]: 'Todo',
+  [TaskItemStatus.InProgress]: 'In Progress',
+  [TaskItemStatus.Done]: 'Done',
+};
+
+const getStatusLabel = (status: TaskItemStatus) => statusLabels[status] ?? 'Unknown';
 
 // Reactive state
 const tasks = ref<TaskResponse[]>([]);
